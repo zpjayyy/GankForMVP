@@ -15,10 +15,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
+import com.jay.gankformvp.func.OnMeizTouchListener;
 import com.jay.gankformvp.presenter.contract.MeiziContract;
 import com.jay.gankformvp.ui.adapter.MeiziAdapter;
 import com.jay.gankformvp.ui.base.BaseFragment;
 import com.jay.gankformvp.widget.ScrollChildSwipeRefreshLayout;
+import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +29,16 @@ import java.util.List;
  */
 public class MeiziFragment extends BaseFragment implements MeiziContract.View {
 
+  private static final int PRELOAD_SIZE = 4;
+
   @BindView(R.id.recycleview_meizi) RecyclerView mRecycleviewMeizi;
   @BindView(R.id.swipe_refresh_layout) ScrollChildSwipeRefreshLayout mSwipeRefreshLayout;
 
-  MeiziContract.Presenter mPresenter;
-  List<Meizi> mLists;
-  MeiziAdapter mAdapter;
+  private MeiziContract.Presenter mPresenter;
+  private List<Meizi> mLists;
+  private MeiziAdapter mAdapter;
+  private int mPage = 1;
+  private boolean mIsFirstTimeTouchBotom = true;
 
   public static MeiziFragment newInstance() {
     return new MeiziFragment();
@@ -62,9 +68,12 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
         new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
     mRecycleviewMeizi.setLayoutManager(manager);
 
-    mAdapter = new MeiziAdapter(getActivity(), mLists);
+    mAdapter = new MeiziAdapter(getContext(), mLists);
     mRecycleviewMeizi.setAdapter(mAdapter);
     mRecycleviewMeizi.setItemAnimator(new DefaultItemAnimator());
+
+    mAdapter.setmOnMeizTouchListener(getOnMeizTouchListener());
+    mRecycleviewMeizi.addOnScrollListener(getOnScrollListener(manager));
 
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
@@ -77,6 +86,39 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   @Override public void onResume() {
     super.onResume();
     mPresenter.start();
+  }
+
+  private OnMeizTouchListener getOnMeizTouchListener() {
+    return new OnMeizTouchListener() {
+      @Override public void onTouch(View v, Meizi meizi) {
+        Logger.d(meizi.createdAt);
+      }
+    };
+  }
+
+  private RecyclerView.OnScrollListener getOnScrollListener(
+      final StaggeredGridLayoutManager layoutManager) {
+    return new RecyclerView.OnScrollListener() {
+      @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        int[] a = layoutManager.findLastVisibleItemPositions(new int[2]);
+        Logger.d(a[0] + " : " + a[1]);
+        Logger.d(mAdapter.getItemCount() + "~~~");
+        boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1]
+            >= mAdapter.getItemCount() - PRELOAD_SIZE;
+
+        if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
+
+          if (!mIsFirstTimeTouchBotom) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            mPage += 1;
+            mPresenter.loadMeiziData(mPage);
+          } else {
+            mIsFirstTimeTouchBotom = false;
+          }
+
+        }
+      }
+    };
   }
 
   @Override public void showLoadingIndicator(boolean activity) {

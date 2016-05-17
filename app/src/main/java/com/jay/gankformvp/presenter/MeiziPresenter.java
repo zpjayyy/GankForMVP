@@ -26,8 +26,8 @@ public class MeiziPresenter implements MeiziContract.Presenter {
     view.setPresenter(this);
   }
 
-  @Override public Subscription loadMeiziData() {
-    return mGankApi.getMeiziData(1)
+  @Override public Subscription loadMeiziData(int page) {
+    return mGankApi.getMeiziData(page)
         .map(new Func1<MeiziData, List<Meizi>>() {
           @Override public List<Meizi> call(MeiziData meiziData) {
             return meiziData.results;
@@ -53,6 +53,6 @@ public class MeiziPresenter implements MeiziContract.Presenter {
 
   @Override public void start() {
     mView.showLoadingIndicator(true);
-    loadMeiziData();
+    loadMeiziData(1);
   }
 }

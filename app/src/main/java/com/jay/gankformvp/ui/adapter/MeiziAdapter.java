@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
+import com.jay.gankformvp.func.OnMeizTouchListener;
 import com.jay.gankformvp.widget.RatioImageView;
 import java.util.List;
 
@@ -19,8 +19,9 @@ import java.util.List;
  */
 public class MeiziAdapter extends RecyclerView.Adapter<MeiziAdapter.ViewHolder> {
 
-  Context mContext;
-  List<Meizi> mMeiziList;
+  private Context mContext;
+  private List<Meizi> mMeiziList;
+  private OnMeizTouchListener mOnMeizTouchListener;
 
   public MeiziAdapter(Context context, List<Meizi> meiziList) {
     mContext = context;
@@ -45,14 +46,23 @@ public class MeiziAdapter extends RecyclerView.Adapter<MeiziAdapter.ViewHolder> 
     return mMeiziList.size();
   }
 
-  class ViewHolder extends RecyclerView.ViewHolder {
+  public void setmOnMeizTouchListener(OnMeizTouchListener onMeizTouchListener) {
+    this.mOnMeizTouchListener = onMeizTouchListener;
+  }
+
+  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     @BindView(R.id.image_meizi) RatioImageView imageMeizi;
 
     public ViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
-      //imageMeizi.setOriginalSize(50, 50);
+      imageMeizi.setOriginalSize(50, 80);
+      itemView.setOnClickListener(this);
+    }
+
+    @Override public void onClick(View v) {
+      mOnMeizTouchListener.onTouch(v, mMeiziList.get(getLayoutPosition()));
     }
   }
 }

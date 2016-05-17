@@ -25,6 +25,6 @@ public interface MeiziContract {
 
   interface Presenter extends BasePresenter {
 
-    Subscription loadMeiziData();
+    Subscription loadMeiziData(int page);
   }
 }
