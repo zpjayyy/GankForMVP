@@ -41,6 +41,7 @@ public class MeiziPresenter implements MeiziContract.Presenter {
           }
 
           @Override public void onError(Throwable e) {
+            mView.showLoadingIndicator(false);
             mView.showFilure(e);
           }
 
