@@ -20,11 +20,16 @@
 package com.jay.gankformvp.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import com.jay.gankformvp.R;
 import com.orhanobut.logger.Logger;
 
 public class RatioImageView extends ImageView {
+
+    private static final int DEFAULT_ORIGINAL_WIDTH = 50;
+    private static final int DEFAULT_ORIGINAL_HEIGHT = 80;
 
     private int originalWidth;
     private int originalHeight;
@@ -37,13 +42,21 @@ public class RatioImageView extends ImageView {
 
     public RatioImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initAttributes(context, attrs);
     }
 
 
     public RatioImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAttributes(context, attrs);
     }
 
+    private void initAttributes(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RatioImageView);
+        originalWidth = typedArray.getInteger(R.styleable.RatioImageView_originalWidth, DEFAULT_ORIGINAL_WIDTH);
+        originalHeight = typedArray.getInteger(R.styleable.RatioImageView_originalHeight, DEFAULT_ORIGINAL_HEIGHT);
+        typedArray.recycle();
+    }
 
     public void setOriginalSize(int originalWidth, int originalHeight) {
         this.originalWidth = originalWidth;
@@ -54,6 +67,8 @@ public class RatioImageView extends ImageView {
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (originalWidth > 0 && originalHeight > 0) {
             float ratio = (float) originalWidth / (float) originalHeight;
+
+            Logger.d(originalWidth + " : " + originalHeight);
 
             int width = MeasureSpec.getSize(widthMeasureSpec);
             int height = MeasureSpec.getSize(heightMeasureSpec);

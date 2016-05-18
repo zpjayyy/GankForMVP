@@ -18,15 +18,9 @@ import rx.schedulers.Schedulers;
 public class MeiziPresenter extends Presenter<MeiziContract.View>
     implements MeiziContract.Presenter {
 
-  final GankApi mGankApi;
-
-  public MeiziPresenter(@NonNull GankApi gankApi) {
-    mGankApi = gankApi;
-  }
-
   @Override public void loadMeiziData(int page) {
     this.mCompositeSubscription.add(
-        mGankApi.getMeiziData(page)
+        mGanApi.getMeiziData(page)
             .map(new Func1<MeiziData, List<Meizi>>() {
               @Override public List<Meizi> call(MeiziData meiziData) {
                 return meiziData.results;

@@ -1,11 +1,15 @@
 package com.jay.gankformvp.presenter.base;
 
+import com.jay.gankformvp.GankApi;
+import com.jay.gankformvp.GankFactory;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by jay on 16/5/18.
  */
 public class Presenter<T extends BaseView> implements BasePresenter<T> {
+
+  public static final GankApi mGanApi = GankFactory.getGankSingleton();
 
   public T mView;
   public CompositeSubscription mCompositeSubscription;

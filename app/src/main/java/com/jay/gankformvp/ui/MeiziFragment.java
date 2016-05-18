@@ -1,6 +1,7 @@
 package com.jay.gankformvp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.func.OnMeizTouchListener;
@@ -26,6 +28,7 @@ import com.jay.gankformvp.widget.ScrollChildSwipeRefreshLayout;
 import com.orhanobut.logger.Logger;
 import com.squareup.haha.perflib.Main;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -53,7 +56,7 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
 
     mLists = new ArrayList<>();
 
-    mPresenter = new MeiziPresenter(BaseActivity.mGanApi);
+    mPresenter = new MeiziPresenter();
   }
 
   @Nullable @Override
@@ -85,8 +88,14 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     mRecycleviewMeizi.setAdapter(mAdapter);
     mRecycleviewMeizi.setItemAnimator(new DefaultItemAnimator());
 
-    mAdapter.setmOnMeizTouchListener(getOnMeizTouchListener());
-    mRecycleviewMeizi.addOnScrollListener(getOnScrollListener(manager));
+    //mAdapter.setmOnMeizTouchListener(getOnMeizTouchListener());
+    //mRecycleviewMeizi.addOnScrollListener(getOnScrollListener(manager));
+
+    mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+      @Override public void onItemClick(View view, int i) {
+        startActivity(new Intent(getContext(), DailyDetailActivity.class));
+      }
+    });
 
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
@@ -103,7 +112,9 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   private OnMeizTouchListener getOnMeizTouchListener() {
     return new OnMeizTouchListener() {
       @Override public void onTouch(View v, Meizi meizi) {
-        Logger.d(meizi.createdAt);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(meizi.createdAt);
+        Logger.d(calendar.get(Calendar.YEAR) + " : " + calendar.get(Calendar.MONTH) + " : " + calendar.get(Calendar.DATE));
       }
     };
   }
@@ -138,8 +149,10 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   }
 
   @Override public void showData(List<Meizi> list) {
-    mLists.addAll(list);
-    mAdapter.notifyDataSetChanged();
+    Logger.d(list.size() + "~~~");
+    //mLists.addAll(list);
+    //mAdapter.notifyDataSetChanged();
+    mAdapter.addData(list);
   }
 
   @Override public void showFilure(Throwable throwable) {

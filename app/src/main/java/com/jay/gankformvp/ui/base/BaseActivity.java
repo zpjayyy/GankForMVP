@@ -12,8 +12,6 @@ import com.jay.gankformvp.R;
  */
 public class BaseActivity extends AppCompatActivity {
 
-  public static final GankApi mGanApi = GankFactory.getGankSingleton();
-
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);

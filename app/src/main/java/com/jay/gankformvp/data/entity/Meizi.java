@@ -1,5 +1,7 @@
 package com.jay.gankformvp.data.entity;
 
+import java.util.Date;
+
 /**
  * Created by jay on 16/5/16.
  */
@@ -18,9 +20,9 @@ public class Meizi {
    */
 
   public String _id;
-  public String createdAt;
+  public Date createdAt;
   public String desc;
-  public String publishedAt;
+  public Date publishedAt;
   public String source;
   public String type;
   public String url;
