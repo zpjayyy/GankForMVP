@@ -1,6 +1,5 @@
 package com.jay.gankformvp.presenter.contract;
 
-import com.jay.gankformvp.data.MeiziData;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.presenter.base.BasePresenter;
 import com.jay.gankformvp.presenter.base.BaseView;
@@ -12,19 +11,14 @@ import rx.Subscription;
  */
 public interface MeiziContract {
 
-  interface View extends BaseView<Presenter> {
-
-    void showLoadingIndicator(boolean activity);
+  interface View extends BaseView {
 
     void showData(List<Meizi> list);
 
-    void showFilure(Throwable throwable);
-
-    void showNoData();
   }
 
-  interface Presenter extends BasePresenter {
+  interface Presenter {
 
-    Subscription loadMeiziData(int page);
+    void loadMeiziData(int page);
   }
 }

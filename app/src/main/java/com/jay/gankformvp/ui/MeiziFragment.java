@@ -1,5 +1,6 @@
 package com.jay.gankformvp.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,11 +17,14 @@ import butterknife.ButterKnife;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.func.OnMeizTouchListener;
+import com.jay.gankformvp.presenter.MeiziPresenter;
 import com.jay.gankformvp.presenter.contract.MeiziContract;
 import com.jay.gankformvp.ui.adapter.MeiziAdapter;
+import com.jay.gankformvp.ui.base.BaseActivity;
 import com.jay.gankformvp.ui.base.BaseFragment;
 import com.jay.gankformvp.widget.ScrollChildSwipeRefreshLayout;
 import com.orhanobut.logger.Logger;
+import com.squareup.haha.perflib.Main;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +38,7 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   @BindView(R.id.recycleview_meizi) RecyclerView mRecycleviewMeizi;
   @BindView(R.id.swipe_refresh_layout) ScrollChildSwipeRefreshLayout mSwipeRefreshLayout;
 
-  private MeiziContract.Presenter mPresenter;
+  private MeiziPresenter mPresenter;
   private List<Meizi> mLists;
   private MeiziAdapter mAdapter;
   private int mPage = 1;
@@ -48,6 +52,8 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     super.onCreate(savedInstanceState);
 
     mLists = new ArrayList<>();
+
+    mPresenter = new MeiziPresenter(BaseActivity.mGanApi);
   }
 
   @Nullable @Override
@@ -61,6 +67,13 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     setUpRecyclerView();
+    mPresenter.attachView(this);
+  }
+
+  @Override public void onDestroyView() {
+    super.onDestroyView();
+    mPresenter.detachView();
+
   }
 
   private void setUpRecyclerView() {
@@ -78,14 +91,13 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
         mLists.clear();
-        mPresenter.start();
       }
     });
   }
 
   @Override public void onResume() {
     super.onResume();
-    mPresenter.start();
+    mPresenter.loadMeiziData(mPage);
   }
 
   private OnMeizTouchListener getOnMeizTouchListener() {
@@ -134,6 +146,7 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     Snackbar.make(mSwipeRefreshLayout, "network is not aviable", Snackbar.LENGTH_LONG)
         .setAction("Action", new View.OnClickListener() {
           @Override public void onClick(View v) {
+            mPresenter.loadMeiziData(mPage);
           }
         })
         .show();
@@ -143,7 +156,4 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
 
   }
 
-  @Override public void setPresenter(MeiziContract.Presenter presenter) {
-    mPresenter = presenter;
-  }
 }

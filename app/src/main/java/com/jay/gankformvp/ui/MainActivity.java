@@ -20,8 +20,6 @@ import com.jay.gankformvp.uitl.ActivityUtils;
 public class MainActivity extends ToolbarActivity
     implements NavigationView.OnNavigationItemSelectedListener {
 
-  MeiziPresenter mMeiziPresenter;
-
   @Override protected int providerContentViewId() {
     return R.layout.activity_main;
   }
@@ -57,7 +55,6 @@ public class MainActivity extends ToolbarActivity
           R.id.contentFrame);
     }
 
-    mMeiziPresenter = new MeiziPresenter(mGanApi, meiziFragment);
   }
 
   @Override public void onBackPressed() {
