@@ -1,10 +1,10 @@
 package com.jay.gankformvp.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -12,29 +12,31 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
-import com.jay.gankformvp.func.OnMeizTouchListener;
+import com.jay.gankformvp.func.OnItemTouchListener;
 import com.jay.gankformvp.presenter.MeiziPresenter;
 import com.jay.gankformvp.presenter.contract.MeiziContract;
 import com.jay.gankformvp.ui.adapter.MeiziAdapter;
-import com.jay.gankformvp.ui.base.BaseActivity;
 import com.jay.gankformvp.ui.base.BaseFragment;
+import com.jay.gankformvp.uitl.DateUtils;
 import com.jay.gankformvp.widget.ScrollChildSwipeRefreshLayout;
 import com.orhanobut.logger.Logger;
-import com.squareup.haha.perflib.Main;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by jay on 16/5/16.
  */
 public class MeiziFragment extends BaseFragment implements MeiziContract.View {
+
+  public static final String ARG_YEAR = "arg_year";
+  public static final String ARG_MONTH = "arg_month";
+  public static final String ARG_DAY = "arg_day";
 
   private static final int PRELOAD_SIZE = 4;
 
@@ -71,12 +73,13 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     super.onViewCreated(view, savedInstanceState);
     setUpRecyclerView();
     mPresenter.attachView(this);
+
+    mPresenter.loadMeiziData(mPage);
   }
 
   @Override public void onDestroyView() {
     super.onDestroyView();
     mPresenter.detachView();
-
   }
 
   private void setUpRecyclerView() {
@@ -88,33 +91,34 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     mRecycleviewMeizi.setAdapter(mAdapter);
     mRecycleviewMeizi.setItemAnimator(new DefaultItemAnimator());
 
-    //mAdapter.setmOnMeizTouchListener(getOnMeizTouchListener());
-    //mRecycleviewMeizi.addOnScrollListener(getOnScrollListener(manager));
-
-    mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
-      @Override public void onItemClick(View view, int i) {
-        startActivity(new Intent(getContext(), DailyDetailActivity.class));
-      }
-    });
+    mAdapter.setmOnMeizTouchListener(getOnMeizTouchListener());
+    mRecycleviewMeizi.addOnScrollListener(getOnScrollListener(manager));
 
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
         mLists.clear();
+        mPage = 1;
+        mPresenter.loadMeiziData(mPage);
       }
     });
   }
 
   @Override public void onResume() {
     super.onResume();
-    mPresenter.loadMeiziData(mPage);
   }
 
-  private OnMeizTouchListener getOnMeizTouchListener() {
-    return new OnMeizTouchListener() {
-      @Override public void onTouch(View v, Meizi meizi) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(meizi.createdAt);
-        Logger.d(calendar.get(Calendar.YEAR) + " : " + calendar.get(Calendar.MONTH) + " : " + calendar.get(Calendar.DATE));
+  private OnItemTouchListener getOnMeizTouchListener() {
+    return new OnItemTouchListener() {
+      @Override public void onTouch(View v, int position) {
+        Date date = mLists.get(position).createdAt;
+
+        Intent intent = new Intent(getActivity(), DailyDetailActivity.class);
+        intent.putExtra(ARG_YEAR, DateUtils.getYear(date));
+        intent.putExtra(ARG_MONTH, DateUtils.getMonth(date));
+        intent.putExtra(ARG_DAY, DateUtils.getDay(date));
+
+        startActivity(intent,
+            ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity()).toBundle());
       }
     };
   }
@@ -124,8 +128,6 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     return new RecyclerView.OnScrollListener() {
       @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         int[] a = layoutManager.findLastVisibleItemPositions(new int[2]);
-        Logger.d(a[0] + " : " + a[1]);
-        Logger.d(mAdapter.getItemCount() + "~~~");
         boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1]
             >= mAdapter.getItemCount() - PRELOAD_SIZE;
 
@@ -138,7 +140,6 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
           } else {
             mIsFirstTimeTouchBotom = false;
           }
-
         }
       }
     };
@@ -149,10 +150,8 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   }
 
   @Override public void showData(List<Meizi> list) {
-    Logger.d(list.size() + "~~~");
-    //mLists.addAll(list);
-    //mAdapter.notifyDataSetChanged();
-    mAdapter.addData(list);
+    mLists.addAll(list);
+    mAdapter.notifyDataSetChanged();
   }
 
   @Override public void showFilure(Throwable throwable) {
@@ -168,5 +167,4 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   @Override public void showNoData() {
 
   }
-
 }

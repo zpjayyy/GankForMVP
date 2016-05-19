@@ -1,7 +1,5 @@
 package com.jay.gankformvp.presenter;
 
-import android.support.annotation.NonNull;
-import com.jay.gankformvp.GankApi;
 import com.jay.gankformvp.data.MeiziData;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.presenter.base.Presenter;

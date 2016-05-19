@@ -24,6 +24,8 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
 
   @BindView(R.id.recyclerview_gank) RecyclerView mRecyclerviewGank;
 
+  private int mYear, mMonth, mDay;
+
   private DailyGankPresenter mPresenter;
   private DailyGankAdapter mAdapter;
   private List<Gank> mGankList;
@@ -35,13 +37,14 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ButterKnife.bind(this);
+    setUpData();
     setUpPresenter();
     setUpRecyclerView();
   }
 
   @Override protected void onPostCreate(@Nullable Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-    mPresenter.loadGankData(2016, 5, 16);
+    mPresenter.loadGankData(mYear, mMonth, mDay);
   }
 
   @Override protected void onResume() {
@@ -54,7 +57,9 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
   }
 
   private void setUpData() {
-
+    mYear = getIntent().getIntExtra(MeiziFragment.ARG_YEAR, -1);
+    mMonth = getIntent().getIntExtra(MeiziFragment.ARG_MONTH, -1);
+    mDay = getIntent().getIntExtra(MeiziFragment.ARG_DAY, -1);
   }
 
   private void setUpPresenter() {
@@ -64,7 +69,7 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
 
   private void setUpRecyclerView() {
     mGankList = new ArrayList<>();
-    mAdapter = new DailyGankAdapter(this, mGankList);
+    mAdapter = new DailyGankAdapter(mGankList);
 
     final LinearLayoutManager manager = new LinearLayoutManager(this);
     mRecyclerviewGank.setLayoutManager(manager);
@@ -76,7 +81,8 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
   }
 
   @Override public void showData(List<Gank> results) {
-    mAdapter.addData(results);
+    mGankList.addAll(results);
+    mAdapter.notifyDataSetChanged();
   }
 
   @Override public void showLoadingIndicator(boolean activity) {
@@ -84,9 +90,11 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
   }
 
   @Override public void showFilure(Throwable throwable) {
+    throwable.printStackTrace();
     Snackbar.make(mRecyclerviewGank, "network is not aviable", Snackbar.LENGTH_LONG)
-        .setAction("Action", new View.OnClickListener() {
+        .setAction("retry", new View.OnClickListener() {
           @Override public void onClick(View v) {
+            mPresenter.loadGankData(mYear, mMonth, mDay);
           }
         })
         .show();

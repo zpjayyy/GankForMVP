@@ -1,6 +1,5 @@
 package com.jay.gankformvp.presenter.contract;
 
-import com.jay.gankformvp.data.GankData;
 import com.jay.gankformvp.data.entity.Gank;
 import com.jay.gankformvp.presenter.base.BaseView;
 import java.util.List;

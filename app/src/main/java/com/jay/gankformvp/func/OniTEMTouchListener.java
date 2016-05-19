@@ -6,8 +6,8 @@ import com.jay.gankformvp.data.entity.Meizi;
 /**
  * Created by jay on 16/5/17.
  */
-public interface OnMeizTouchListener {
+public interface OnItemTouchListener {
 
-  void onTouch(View v, Meizi meizi);
+  void onTouch(View v, int position);
 
 }

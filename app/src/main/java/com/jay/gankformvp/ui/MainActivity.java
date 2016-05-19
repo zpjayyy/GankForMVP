@@ -7,13 +7,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.transition.Fade;
 import android.view.MenuItem;
 import android.view.View;
 import com.jay.gankformvp.R;
-import com.jay.gankformvp.presenter.MeiziPresenter;
 import com.jay.gankformvp.ui.base.ToolbarActivity;
 import com.jay.gankformvp.uitl.ActivityUtils;
 

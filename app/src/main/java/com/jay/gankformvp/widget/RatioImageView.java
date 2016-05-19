@@ -24,12 +24,11 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.jay.gankformvp.R;
-import com.orhanobut.logger.Logger;
 
 public class RatioImageView extends ImageView {
 
     private static final int DEFAULT_ORIGINAL_WIDTH = 50;
-    private static final int DEFAULT_ORIGINAL_HEIGHT = 80;
+    private static final int DEFAULT_ORIGINAL_HEIGHT = 70;
 
     private int originalWidth;
     private int originalHeight;
@@ -67,8 +66,6 @@ public class RatioImageView extends ImageView {
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (originalWidth > 0 && originalHeight > 0) {
             float ratio = (float) originalWidth / (float) originalHeight;
-
-            Logger.d(originalWidth + " : " + originalHeight);
 
             int width = MeasureSpec.getSize(widthMeasureSpec);
             int height = MeasureSpec.getSize(heightMeasureSpec);

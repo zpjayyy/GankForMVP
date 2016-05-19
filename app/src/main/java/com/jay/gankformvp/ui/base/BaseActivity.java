@@ -3,8 +3,6 @@ package com.jay.gankformvp.ui.base;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.jay.gankformvp.GankApi;
-import com.jay.gankformvp.GankFactory;
 import com.jay.gankformvp.R;
 
 /**
