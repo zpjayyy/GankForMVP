@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class DailyGankAdapter extends RecyclerView.Adapter<DailyGankAdapter.View
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
     Gank gank = mGankList.get(position);
     StyleSpan span = new StyleSpan(Typeface.BOLD_ITALIC);
+    UnderlineSpan underlineSpan = new UnderlineSpan();
 
     if (position == 0) {
       showCategory(holder);
@@ -56,8 +58,8 @@ public class DailyGankAdapter extends RecyclerView.Adapter<DailyGankAdapter.View
     holder.mTextCategory.setText(gank.type);
 
     SpannableStringBuilder builder =
-        new SpannableStringBuilder(gank.desc).append(StringStyles.format(span, " (via. " +
-            gank.who + ")"));
+        new SpannableStringBuilder(gank.desc).append(StringStyles.format(" (via. " +
+            gank.who + ")", span, underlineSpan));
     CharSequence gankText = builder.subSequence(0, builder.length());
 
     holder.mTextTitle.setText(gankText);
@@ -80,7 +82,7 @@ public class DailyGankAdapter extends RecyclerView.Adapter<DailyGankAdapter.View
     return mGankList.size();
   }
 
-  public void setmOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
+  public void setOnItemTouchListener(OnItemTouchListener onItemTouchListener) {
     this.mOnItemTouchListener = onItemTouchListener;
   }
 
@@ -92,6 +94,7 @@ public class DailyGankAdapter extends RecyclerView.Adapter<DailyGankAdapter.View
     public ViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
+      itemView.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {

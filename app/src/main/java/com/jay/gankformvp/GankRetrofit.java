@@ -1,5 +1,6 @@
 package com.jay.gankformvp;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
@@ -24,6 +25,7 @@ public class GankRetrofit {
     OkHttpClient client = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .addNetworkInterceptor(new HeaderInterceptor())
+        .addNetworkInterceptor(new StethoInterceptor())
         .retryOnConnectionFailure(true)
         .connectTimeout(15, TimeUnit.SECONDS)
         .build();

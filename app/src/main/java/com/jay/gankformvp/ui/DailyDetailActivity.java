@@ -1,5 +1,6 @@
 package com.jay.gankformvp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Gank;
+import com.jay.gankformvp.func.OnItemTouchListener;
 import com.jay.gankformvp.presenter.DailyGankPresenter;
 import com.jay.gankformvp.presenter.contract.DailyGankContract;
 import com.jay.gankformvp.ui.adapter.DailyGankAdapter;
@@ -37,7 +39,7 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ButterKnife.bind(this);
-    setUpData();
+    getData();
     setUpPresenter();
     setUpRecyclerView();
   }
@@ -56,7 +58,7 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
     mPresenter.detachView();
   }
 
-  private void setUpData() {
+  private void getData() {
     mYear = getIntent().getIntExtra(MeiziFragment.ARG_YEAR, -1);
     mMonth = getIntent().getIntExtra(MeiziFragment.ARG_MONTH, -1);
     mDay = getIntent().getIntExtra(MeiziFragment.ARG_DAY, -1);
@@ -74,6 +76,8 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
     final LinearLayoutManager manager = new LinearLayoutManager(this);
     mRecyclerviewGank.setLayoutManager(manager);
     mRecyclerviewGank.setAdapter(mAdapter);
+
+    mAdapter.setOnItemTouchListener(getOnItemTouchListener());
   }
 
   @Override public boolean canBack() {
@@ -102,5 +106,14 @@ public class DailyDetailActivity extends ToolbarActivity implements DailyGankCon
 
   @Override public void showNoData() {
 
+  }
+
+  private OnItemTouchListener getOnItemTouchListener() {
+    return new OnItemTouchListener() {
+      @Override public void onTouch(View v, int position) {
+        startActivity(
+            WebViewActivity.newIntent(DailyDetailActivity.this, mGankList.get(position).url));
+      }
+    };
   }
 }

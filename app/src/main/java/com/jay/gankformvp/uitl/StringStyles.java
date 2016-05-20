@@ -7,9 +7,11 @@ import android.text.SpannableString;
  */
 public class StringStyles {
 
-  public static SpannableString format(Object what, String text) {
+  public static SpannableString format(String text, Object ... whats) {
     SpannableString spannableString = new SpannableString(text);
-    spannableString.setSpan(what, 0, text.length(), 0);
+    for (Object what : whats) {
+      spannableString.setSpan(what, 0, text.length(), 0);
+    }
     return spannableString;
   }
 

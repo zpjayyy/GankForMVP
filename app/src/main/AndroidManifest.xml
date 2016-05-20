@@ -24,6 +24,8 @@
 
     <activity android:name=".ui.DailyDetailActivity"/>
 
+    <activity android:name=".ui.WebViewActivity"/>
+
   </application>
 
 </manifest>

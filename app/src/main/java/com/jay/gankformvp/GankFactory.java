@@ -15,7 +15,7 @@ public class GankFactory {
   public static GankApi getGankSingleton() {
     synchronized (monitor) {
       if (sGankSingleton == null) {
-        sGankSingleton = new GankRetrofit().gankService;
+        sGankSingleton = new GankRetrofit().getGankService();
       }
       return sGankSingleton;
     }
