@@ -144,9 +144,24 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
     };
   }
 
-  @Override public void showLoadingIndicator(boolean activity) {
-    Logger.d("refresh = " + activity);
-    mSwipeRefreshLayout.setRefreshing(activity);
+  @Override public void showLoadingIndicator(final boolean activity) {
+    if (mSwipeRefreshLayout == null) {
+      return;
+    }
+    if (!activity) {
+      mSwipeRefreshLayout.postDelayed(new Runnable() {
+        @Override public void run() {
+          mSwipeRefreshLayout.setRefreshing(false);
+        }
+      }, 1000);
+    } else {
+      mSwipeRefreshLayout.post(new Runnable() {
+        @Override public void run() {
+          mSwipeRefreshLayout.setRefreshing(true);
+        }
+      });
+    }
+
   }
 
   @Override public void showData(List<Meizi> list) {

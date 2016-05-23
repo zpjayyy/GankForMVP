@@ -15,6 +15,7 @@ import com.jay.gankformvp.func.OnItemTouchListener;
 import com.jay.gankformvp.widget.RatioImageView;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import rx.functions.Action1;
 
 /**
  * Created by jay on 16/5/17.
@@ -38,10 +39,7 @@ public class MeiziAdapter extends RecyclerView.Adapter<MeiziAdapter.ViewHolder> 
 
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
     Meizi meizi = mMeiziList.get(position);
-    Glide.with(mContext)
-        .load(meizi.url)
-        .centerCrop()
-        .into(holder.imageMeizi);
+    Glide.with(mContext).load(meizi.url).centerCrop().into(holder.imageMeizi);
   }
 
   @Override public int getItemCount() {
@@ -52,20 +50,21 @@ public class MeiziAdapter extends RecyclerView.Adapter<MeiziAdapter.ViewHolder> 
     this.mOnMeizTouchListener = onMeizTouchListener;
   }
 
-  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+  class ViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.image_meizi) RatioImageView imageMeizi;
 
-    public ViewHolder(View itemView) {
+    public ViewHolder(final View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
       imageMeizi.setOriginalSize(50, 80);
-      itemView.setOnClickListener(this);
-      //RxView.clicks(itemView).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe();
-    }
-
-    @Override public void onClick(View v) {
-      mOnMeizTouchListener.onTouch(v, getLayoutPosition());
+      RxView.clicks(itemView)
+          .throttleFirst(500, TimeUnit.MILLISECONDS)
+          .subscribe(new Action1<Void>() {
+            @Override public void call(Void aVoid) {
+              mOnMeizTouchListener.onTouch(itemView, getLayoutPosition());
+            }
+          });
     }
   }
 }

@@ -4,6 +4,7 @@ import com.jay.gankformvp.data.MeiziData;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.presenter.base.Presenter;
 import com.jay.gankformvp.presenter.contract.MeiziContract;
+import com.orhanobut.logger.Logger;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
