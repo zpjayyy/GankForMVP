@@ -5,8 +5,10 @@ import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.presenter.base.Presenter;
 import com.jay.gankformvp.presenter.contract.MeiziContract;
 import java.util.List;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -25,6 +27,12 @@ public class MeiziPresenter extends Presenter<MeiziContract.View>
               }
             })
             .subscribeOn(Schedulers.io())
+            .doOnSubscribe(new Action0() {
+              @Override public void call() {
+                mView.showLoadingIndicator(true);
+              }
+            })
+            .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<List<Meizi>>() {
               @Override public void onCompleted() {

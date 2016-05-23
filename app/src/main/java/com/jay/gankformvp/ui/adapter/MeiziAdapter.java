@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jay.gankformvp.R;
 import com.jay.gankformvp.data.entity.Meizi;
 import com.jay.gankformvp.func.OnItemTouchListener;
 import com.jay.gankformvp.widget.RatioImageView;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jay on 16/5/17.
@@ -59,6 +61,7 @@ public class MeiziAdapter extends RecyclerView.Adapter<MeiziAdapter.ViewHolder> 
       ButterKnife.bind(this, itemView);
       imageMeizi.setOriginalSize(50, 80);
       itemView.setOnClickListener(this);
+      //RxView.clicks(itemView).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe();
     }
 
     @Override public void onClick(View v) {

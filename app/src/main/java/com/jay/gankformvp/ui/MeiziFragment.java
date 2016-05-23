@@ -127,7 +127,6 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
       final StaggeredGridLayoutManager layoutManager) {
     return new RecyclerView.OnScrollListener() {
       @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        int[] a = layoutManager.findLastVisibleItemPositions(new int[2]);
         boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1]
             >= mAdapter.getItemCount() - PRELOAD_SIZE;
 
@@ -146,6 +145,7 @@ public class MeiziFragment extends BaseFragment implements MeiziContract.View {
   }
 
   @Override public void showLoadingIndicator(boolean activity) {
+    Logger.d("refresh = " + activity);
     mSwipeRefreshLayout.setRefreshing(activity);
   }
 
